@@ -1,4 +1,4 @@
-# Responsive Portfolio Website Med0X
+# Responsive Portfolio Website
 
 This my a simple and modern portfolio website built with HTML, CSS, and Vanilla JavaScript.
 
