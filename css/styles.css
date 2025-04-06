@@ -3,6 +3,27 @@
  */
 @import url("https://fonts.googleapis.com/css2?family=Lavishly+Yours&family=Poppins:wght@400;500;600&display=swap");
 
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+a, .btn, .highlight {
+  color: var(--primary-color);
+}
+
+.theme-switcher {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  border-radius: 6px;
+}
+
+
+
 /*==================== VARIABLES CSS ====================*/
 :root {
   --header-height: 3rem;
@@ -1188,3 +1209,14 @@ img {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+
+.greeting {
+    padding: 10%;
+    font-size: var(--normal-font-size);
+    font-weight: var(--font-medium);
+    color: var(--first-color);
+    margin-top: var(--mb-1);
+    text-align: center;
+  }
+  
