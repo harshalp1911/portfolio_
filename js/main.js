@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(function (response) {
           console.log("Email sent successfully!", response);
           alert("Your message has been sent successfully!");
-          contactForm.reset(); // Reset the form after successful submission
+          contactForm.reset(); // Reset  form after successful submission
         })
         .catch(function (error) {
           console.error("Error sending email:", error);
