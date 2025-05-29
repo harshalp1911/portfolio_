@@ -1213,7 +1213,7 @@ img {
 
 .greeting {
     padding: 10%;
-    font-size: var(--normal-font-size);
+    font-size: var(--font-medium);
     font-weight: var(--font-medium);
     color: var(--first-color);
     margin-top: var(--mb-1);
