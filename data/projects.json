@@ -1,0 +1,20 @@
+[
+  {
+    "title": "UrbanGleam",
+    "description": "E-com website offers wide range of product along with admin dashboard and payment gateway",
+    "img": "img/Screenshot 2025-03-12 at 4.20.37 PM.png",
+    "url": "https://github.com/harshalp1911/UrbanGleam"
+  },
+  {
+    "title": "CodeInit",
+    "description": "Online code editor with real time editing feature.",
+    "img": "img/1_U2doBF3eEw_mHMbeJBpuQg.jpg",
+    "url": "#"
+  },
+  {
+    "title": "Digi Notes",
+    "description": "Track your to-do list here.",
+    "img": "img/portfolio3.jpg",
+    "url": "#"
+  }
+]
