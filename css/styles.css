@@ -1220,3 +1220,35 @@ img {
     text-align: center;
   }
   
+
+/* Bubble container */
+#bubbles {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1; /* behind all content */
+}
+
+/* Each bubble */
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  background: rgba(72, 107, 248, 0.15); /* very subtle white */
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: rise 6s ease-in infinite, pop 0.3s ease-out var(--pop-delay) forwards;
+}
+
+/* Rise from bottom to top */
+@keyframes rise {
+  0%   { transform: translateY(0) scale(0.8); opacity: 0.6; }
+  80%  { opacity: 0.3; }
+  100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+}
+
+/* Pop at end */
+@keyframes pop {
+  to { transform: scale(1.5); opacity: 0; }
+}
