@@ -18,7 +18,10 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const theme = localStorage.getItem('theme');
-    if (theme === 'dark') {
+    if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+      setIsDark(false);
+    } else {
       document.documentElement.classList.add('dark');
       setIsDark(true);
     }
@@ -66,8 +69,8 @@ const Header: React.FC = () => {
       <nav className="container mx-auto px-4">
         <div className={`flex items-center justify-between px-5 py-2.5 rounded-full transition-all duration-500 ${
           isScrolled
-            ? 'bg-slate-900/95 dark:bg-slate-800/95 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] ring-1 ring-white/10'
-            : 'bg-slate-900/80 dark:bg-slate-800/75 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.2)] ring-1 ring-white/[0.08]'
+            ? 'bg-white/80 dark:bg-slate-700/80 backdrop-blur-2xl shadow-2xl border border-gray-200/60 dark:border-slate-600/50'
+            : 'bg-white/60 dark:bg-slate-700/60 backdrop-blur-xl shadow-lg border border-gray-200/40 dark:border-slate-600/30'
         }`}>
           <Link
             to="/"
@@ -76,7 +79,7 @@ const Header: React.FC = () => {
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#EF6461] to-[#ff8a87] flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
               <span className="text-white font-bold text-lg">H</span>
             </div>
-            <span className="text-base font-semibold text-white hidden sm:block">Harshal</span>
+            <span className="text-base font-semibold text-gray-800 dark:text-white hidden sm:block">Harshal</span>
           </Link>
 
           <div className="hidden md:flex items-center space-x-1">
@@ -91,7 +94,7 @@ const Header: React.FC = () => {
                       scrollToSection(link.section);
                     }
                   }}
-                  className="px-4 py-1.5 text-sm font-medium transition-all duration-200 text-white/75 hover:text-white hover:bg-white/10 rounded-full"
+                  className="px-4 py-1.5 text-sm font-medium transition-all duration-200 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-white/10 rounded-full"
                 >
                   {link.name}
                 </button>
@@ -101,8 +104,8 @@ const Header: React.FC = () => {
                   to={link.path}
                   className={`px-4 py-1.5 text-sm font-medium transition-all duration-200 rounded-full ${
                     location.pathname === link.path
-                      ? 'text-white bg-white/15'
-                      : 'text-white/75 hover:text-white hover:bg-white/10'
+                      ? 'text-gray-900 dark:text-white bg-gray-100/60 dark:bg-white/15'
+                      : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-white/10'
                   }`}
                 >
                   {link.name}
@@ -113,7 +116,7 @@ const Header: React.FC = () => {
 
           <button
             onClick={toggleTheme}
-            className="hidden md:block p-2 rounded-full hover:bg-white/10 transition-colors text-white/75 hover:text-white"
+            className="hidden md:block p-2 rounded-full hover:bg-gray-100/60 dark:hover:bg-white/10 transition-colors text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
             aria-label="Toggle theme"
           >
             {isDark ? (
@@ -129,7 +132,7 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-full hover:bg-white/10 text-white/80"
+            className="md:hidden p-2 rounded-full hover:bg-gray-100/60 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200"
             aria-label="Toggle menu"
           >
             <svg
@@ -158,7 +161,7 @@ const Header: React.FC = () => {
         </div>
 
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-3 py-4 bg-slate-900/95 backdrop-blur-2xl rounded-2xl px-5 ring-1 ring-white/10">
+          <div className="md:hidden mt-3 py-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl px-5 border border-gray-200/60 dark:border-white/10">
             {navLinks.map((link) => (
               link.section ? (
                 <button

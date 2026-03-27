@@ -76,7 +76,7 @@ const Blog: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen pt-32 pb-20 bg-gray-50 dark:bg-slate-800/30">
+    <div className="min-h-screen pt-32 pb-20 bg-gray-100 dark:bg-slate-900">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-normal text-center mb-4 text-gray-900 dark:text-gray-100">Blog</h1>
         <p className="text-center text-gray-600 dark:text-gray-400 mb-16">Thoughts, tutorials, and insights</p>
@@ -84,7 +84,7 @@ const Blog: React.FC = () => {
         {/* Posts Feed - LinkedIn Style */}
         <div className="max-w-2xl mx-auto space-y-6">
           {posts.map((post: any) => (
-            <div key={post._id} className="bg-white dark:bg-slate-800 rounded-2xl p-6 hover:shadow-xl transition-shadow">
+            <div key={post._id} className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-md border border-gray-200/60 dark:border-gray-700 hover:shadow-2xl hover:border-gray-300 dark:hover:border-gray-600 transition-all">
               {/* Post Header */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#EF6461] to-[#ff8a87] flex items-center justify-center text-white font-bold text-lg">

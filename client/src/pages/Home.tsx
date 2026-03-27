@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { projectsAPI, skillsAPI, contentAPI, experienceAPI, educationAPI } from '../services/api';
+import { projectsAPI, skillsAPI, contentAPI, experienceAPI, educationAPI, settingsAPI } from '../services/api';
 import ResumeModal from '../components/ResumeModal';
 import RubiksCube from '../components/RubiksCube';
 
@@ -42,6 +42,8 @@ const categoryMeta: Record<string, { icon: string }> = {
 
 const Home: React.FC = () => {
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [contactStatus, setContactStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
   const { data: projects }    = useQuery('featuredProjects', projectsAPI.getAll,              { refetchOnMount: 'always' });
   const { data: skills }      = useQuery('skills',           skillsAPI.getAll,                { refetchOnMount: 'always' });
@@ -49,18 +51,37 @@ const Home: React.FC = () => {
   const { data: aboutContent }= useQuery('aboutContent',     () => contentAPI.get('about'),   { refetchOnMount: 'always' });
   const { data: experiences } = useQuery('experiences',      experienceAPI.getAll,            { refetchOnMount: 'always' });
   const { data: education }   = useQuery('education',        educationAPI.getAll,             { refetchOnMount: 'always' });
+  const { data: settingsData }= useQuery('settings',         settingsAPI.get,                 { refetchOnMount: 'always' });
 
   const featuredProjects  = projects?.data?.filter((p: any) => p.featured).slice(0, 3) || [];
   const hero              = heroContent?.data?.data?.hero  || {};
   const about             = aboutContent?.data?.data?.about || {};
   const experienceList: any[] = experiences?.data?.data ?? [];
   const educationList: any[]  = education?.data?.data   ?? [];
+  const settings          = settingsData?.data || {};
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactForm.name || !contactForm.email || !contactForm.message) return;
+    setContactStatus('sending');
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: contactForm.name, email: contactForm.email, message: contactForm.message }),
+      });
+      setContactStatus('sent');
+      setContactForm({ name: '', email: '', message: '' });
+    } catch {
+      setContactStatus('error');
+    }
+  };
 
   return (
     <div className="min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section id="home" className="min-h-screen flex items-center bg-gray-50 dark:bg-slate-900 overflow-hidden">
+      <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gray-50 dark:bg-slate-900">
         <div className="container w-full">
           <div className="grid lg:grid-cols-2 gap-12 items-center py-24 lg:py-0 min-h-screen">
             {/* Left */}
@@ -94,7 +115,7 @@ const Home: React.FC = () => {
             </div>
             {/* Right: 3D Rubik's Cube */}
             <div className="hidden lg:flex items-center justify-center relative">
-              <div className="absolute w-80 h-80 bg-[#EF6461]/5 rounded-full blur-3xl" />
+              <div className="absolute w-80 h-80 bg-[#EF6461]/5 rounded-full blur-3xl opacity-80" />
               <RubiksCube />
             </div>
           </div>
@@ -136,8 +157,8 @@ const Home: React.FC = () => {
       </section>
 
       {/* ── SKILLS ───────────────────────────────────────────────────────── */}
-      <section id="skills" className="py-24 dark:bg-slate-800/20 relative" style={{
-        backgroundImage: 'radial-gradient(rgba(0,0,0,0.15) 1.5px, transparent 1.5px)',
+      <section id="skills" className="py-24 bg-gray-50 dark:bg-slate-800/20 relative" style={{
+        backgroundImage: 'radial-gradient(rgba(0,0,0,0.08) 1.5px, transparent 1.5px)',
         backgroundSize: '28px 28px',
       }}>
         <div className="container">
@@ -196,7 +217,9 @@ const Home: React.FC = () => {
                   <div className="relative overflow-hidden aspect-[4/3]">
                     <img src={project.imageUrl} alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-40 dark:opacity-30">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
                     <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                       <div className="flex gap-2">
                         {project.demoUrl && (
@@ -281,10 +304,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* ── EDUCATION ────────────────────────────────────────────────────── */}
-      <section id="education" className="py-24 bg-white dark:bg-slate-900 relative" style={{
-        backgroundImage: 'linear-gradient(135deg, rgba(239,100,97,0.08) 25%, transparent 25%, transparent 75%, rgba(239,100,97,0.08) 75%)',
-        backgroundSize: '56px 56px',
-      }}>
+      <section id="education" className="py-24 bg-white dark:bg-slate-900 relative">
         <div className="container">
           <Fade>
             <div className="text-center mb-16">
@@ -324,7 +344,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* ── CONTACT ──────────────────────────────────────────────────────── */}
-      <section id="contact" className="py-32 bg-gray-50 dark:bg-slate-800/30">
+      <section id="contact" className="py-24 bg-gray-50 dark:bg-slate-800/30">
         <div className="container">
           <Fade>
             <div className="grid md:grid-cols-2 gap-16 max-w-6xl mx-auto items-start">
@@ -334,9 +354,9 @@ const Home: React.FC = () => {
                 <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-12">Have a project in mind or just want to chat? I'm always open to discussing new projects, creative ideas, or opportunities.</p>
                 <div className="space-y-4">
                   {[
-                    { icon: <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />, label: 'Nagpur, Maharashtra', href: undefined },
-                    { icon: <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />, label: '9158508339', href: 'tel:+919158508339' },
-                    { icon: <><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></>, label: 'harshalp0602@gmail.com', href: 'mailto:harshalp0602@gmail.com' },
+                    { icon: <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />, label: settings.address || 'Location', href: undefined },
+                    { icon: <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />, label: settings.phone || 'Phone', href: settings.phone ? `tel:${settings.phone}` : undefined },
+                    { icon: <><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></>, label: settings.email || 'Email', href: settings.email ? `mailto:${settings.email}` : undefined },
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-3 text-gray-600 dark:text-gray-400">
                       <span className="w-9 h-9 rounded-xl bg-[#EF6461]/10 flex items-center justify-center flex-shrink-0">
@@ -351,16 +371,21 @@ const Home: React.FC = () => {
                   ))}
                 </div>
               </div>
-              <form className="space-y-6">
-                {['Full Name', 'Email Address'].map((placeholder) => (
-                  <input key={placeholder} type={placeholder.includes('Email') ? 'email' : 'text'} placeholder={placeholder}
-                    className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 dark:border-gray-700 focus:border-[#EF6461] outline-none transition-colors placeholder:text-gray-400 text-gray-900 dark:text-gray-100" />
-                ))}
-                <textarea rows={5} placeholder="Your Message"
+              <form className="space-y-6" onSubmit={handleContactSubmit}>
+                <input type="text" placeholder="Full Name" value={contactForm.name}
+                  onChange={e => setContactForm(f => ({ ...f, name: e.target.value }))}
+                  className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 dark:border-gray-700 focus:border-[#EF6461] outline-none transition-colors placeholder:text-gray-400 text-gray-900 dark:text-gray-100" />
+                <input type="email" placeholder="Email Address" value={contactForm.email}
+                  onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
+                  className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 dark:border-gray-700 focus:border-[#EF6461] outline-none transition-colors placeholder:text-gray-400 text-gray-900 dark:text-gray-100" />
+                <textarea rows={5} placeholder="Your Message" value={contactForm.message}
+                  onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
                   className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 dark:border-gray-700 focus:border-[#EF6461] outline-none transition-colors placeholder:text-gray-400 resize-none text-gray-900 dark:text-gray-100" />
-                <button type="submit"
-                  className="w-full bg-[#EF6461] hover:bg-[#ff8a87] text-white font-medium py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#EF6461]/25 hover:-translate-y-0.5">
-                  Send Message →
+                {contactStatus === 'sent' && <p className="text-green-500 text-sm">✓ Message sent successfully!</p>}
+                {contactStatus === 'error' && <p className="text-red-400 text-sm">Failed to send. Please try again.</p>}
+                <button type="submit" disabled={contactStatus === 'sending'}
+                  className="w-full bg-[#EF6461] hover:bg-[#ff8a87] disabled:opacity-60 text-white font-medium py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#EF6461]/25 hover:-translate-y-0.5">
+                  {contactStatus === 'sending' ? 'Sending...' : 'Send Message →'}
                 </button>
               </form>
             </div>

@@ -118,20 +118,6 @@ const SkillManager: React.FC = () => {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Proficiency: {formData.proficiency}%
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={formData.proficiency}
-              onChange={(e) => setFormData({ ...formData, proficiency: parseInt(e.target.value) })}
-              className="w-full"
-            />
-          </div>
-
           <div className="grid md:grid-cols-2 gap-4">
             <div className="flex items-center gap-2">
               <input
@@ -178,24 +164,13 @@ const SkillManager: React.FC = () => {
               {categorySkills.map((skill: any) => (
                 <div key={skill._id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3">
                       <span className="font-medium">{skill.name}</span>
                       {!skill.visible && (
                         <span className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-xs rounded">
                           Hidden
                         </span>
                       )}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                          className="bg-primary-600 h-2 rounded-full"
-                          style={{ width: `${skill.proficiency}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm text-gray-600 dark:text-gray-400 w-12">
-                        {skill.proficiency}%
-                      </span>
                     </div>
                   </div>
                   <div className="flex gap-2 ml-4">
