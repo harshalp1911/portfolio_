@@ -101,7 +101,7 @@ const Home: React.FC = () => {
                 {hero.description || 'Passionate about building scalable web applications and optimizing user experiences. Skilled in MERN stack, backend development, and real-time collaboration tools.'}
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to={hero.primaryButtonLink || '/projects'} className="btn-primary">
+                <Link to={hero.primaryButtonLink || '/projects'} target='blank' className="btn-primary">
                   {hero.primaryButtonText || 'View Work'}
                 </Link>
                 <button onClick={() => setIsResumeModalOpen(true)} className="btn-secondary">
