@@ -26,7 +26,7 @@ const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', process.env.RAILWAY_URL || ''],
   credentials: true
 }));
 app.use(express.json());
@@ -55,6 +55,14 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/experience', experienceRoutes);
 app.use('/api/education', educationRoutes);
+
+// Serve static files from React app
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Handle React routing
+app.get('*', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 app.use((err: any, req: Request, res: Response, next: any) => {
   console.error(err.stack);
