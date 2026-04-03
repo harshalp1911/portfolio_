@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Layout from './components/layout/Layout';
@@ -22,6 +22,16 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch("https://portfolio-backend-soc1.onrender.com/ping")
+        .then(() => console.log("Pinged backend"))
+        .catch(() => console.log("Error pinging backend"));
+    }, 10 * 60 * 1000); // every 10 minutes
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router>

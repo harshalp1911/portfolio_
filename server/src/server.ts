@@ -43,6 +43,10 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Portfolio API Server Running' });
 });
 
+app.get('/ping', (req: Request, res: Response) => {
+  res.json({ message: 'pong' });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/posts', postRoutes);
