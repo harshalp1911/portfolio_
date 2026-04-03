@@ -56,13 +56,6 @@ app.use('/api/content', contentRoutes);
 app.use('/api/experience', experienceRoutes);
 app.use('/api/education', educationRoutes);
 
-// Serve static files from React app
-app.use(express.static(path.join(__dirname, '../client/build')));
-
-// Handle React routing
-app.get('*', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
 
 app.use((err: any, req: Request, res: Response, next: any) => {
   console.error(err.stack);
