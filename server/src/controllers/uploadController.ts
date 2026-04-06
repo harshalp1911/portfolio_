@@ -26,6 +26,8 @@ export const uploadImage = async (req: Request, res: Response): Promise<void> =>
       ];
     } else {
       uploadOptions.resource_type = 'raw';
+      uploadOptions.access_mode = 'public';
+      uploadOptions.type = 'upload';
     }
     const result = await cloudinary.uploader.upload(req.file.path, uploadOptions);
 
