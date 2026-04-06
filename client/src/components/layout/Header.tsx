@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,6 +55,17 @@ const Header: React.FC = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const handleSectionClick = (sectionId: string) => {
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        scrollToSection(sectionId);
+      }, 100);
+    } else {
+      scrollToSection(sectionId);
+    }
+  };
+
   const navLinks = [
     { name: 'Home', path: '/', section: 'home' },
     { name: 'Skills', path: '/', section: 'skills' },
@@ -87,13 +99,7 @@ const Header: React.FC = () => {
               link.section ? (
                 <button
                   key={link.name}
-                  onClick={() => {
-                    if (location.pathname !== '/') {
-                      window.location.href = '/#' + link.section;
-                    } else {
-                      scrollToSection(link.section);
-                    }
-                  }}
+                  onClick={() => handleSectionClick(link.section)}
                   className="px-4 py-1.5 text-sm font-medium transition-all duration-200 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-white/10 rounded-full"
                 >
                   {link.name}
@@ -166,13 +172,7 @@ const Header: React.FC = () => {
               link.section ? (
                 <button
                   key={link.name}
-                  onClick={() => {
-                    if (location.pathname !== '/') {
-                      window.location.href = '/#' + link.section;
-                    } else {
-                      scrollToSection(link.section);
-                    }
-                  }}
+                  onClick={() => handleSectionClick(link.section)}
                   className="block py-2.5 text-sm font-medium transition-colors text-white/75 hover:text-white w-full text-left"
                 >
                   {link.name}
