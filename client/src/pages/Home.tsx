@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { projectsAPI, skillsAPI, contentAPI, experienceAPI, educationAPI, settingsAPI } from '../services/api';
+import { projectsAPI, skillsAPI, contentAPI, experienceAPI, educationAPI, settingsAPI, resumeAPI } from '../services/api';
 import ResumeModal from '../components/ResumeModal';
 import RubiksCube from '../components/RubiksCube';
 
@@ -52,6 +52,7 @@ const Home: React.FC = () => {
   const { data: experiences } = useQuery('experiences',      experienceAPI.getAll,            { refetchOnMount: 'always' });
   const { data: education }   = useQuery('education',        educationAPI.getAll,             { refetchOnMount: 'always' });
   const { data: settingsData }= useQuery('settings',         settingsAPI.get,                 { refetchOnMount: 'always' });
+  const { data: resumeData }   = useQuery('resume',           resumeAPI.get,                   { refetchOnMount: 'always', retry: false, onError: () => {} });
 
   const featuredProjects  = projects?.data?.filter((p: any) => p.featured).slice(0, 3) || [];
   const hero              = heroContent?.data?.data?.hero  || {};
@@ -104,7 +105,15 @@ const Home: React.FC = () => {
                 <Link to={hero.primaryButtonLink || '/projects'} target='blank' className="btn-primary">
                   {hero.primaryButtonText || 'View Work'}
                 </Link>
-                <button onClick={() => setIsResumeModalOpen(true)} className="btn-secondary">
+                <button 
+                  onClick={() => {
+                    const resume = resumeData?.data;
+                    if (resume?.fileUrl) {
+                      window.open(resume.fileUrl, '_blank');
+                    }
+                  }} 
+                  className="btn-secondary"
+                >
                   Resume
                 </button>
               </div>
