@@ -28,8 +28,12 @@ const ResumeManager: React.FC = () => {
   const deleteMutation = useMutation(resumeAPI.delete, {
     onSuccess: () => {
       queryClient.invalidateQueries('resume');
+      queryClient.refetchQueries('resume');
       setSuccess('Resume deleted successfully!');
       setTimeout(() => setSuccess(''), 3000);
+    },
+    onError: (err: any) => {
+      setError(err.response?.data?.message || 'Failed to delete resume');
     },
   });
 
