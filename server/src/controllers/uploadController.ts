@@ -25,9 +25,9 @@ export const uploadImage = async (req: Request, res: Response): Promise<void> =>
         { fetch_format: 'auto' }
       ];
     } else {
-      uploadOptions.resource_type = 'raw';
-      uploadOptions.access_mode = 'public';
-      uploadOptions.type = 'upload';
+      uploadOptions.resource_type = 'image';
+      uploadOptions.format = 'pdf';
+      uploadOptions.flags = 'attachment';
     }
     const result = await cloudinary.uploader.upload(req.file.path, uploadOptions);
 
