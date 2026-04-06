@@ -60,6 +60,8 @@ app.use('/api/content', contentRoutes);
 app.use('/api/experience', experienceRoutes);
 app.use('/api/education', educationRoutes);
 
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use((err: any, req: Request, res: Response, next: any) => {
   console.error(err.stack);

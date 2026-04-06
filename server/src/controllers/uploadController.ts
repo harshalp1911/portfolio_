@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import cloudinary from '../config/cloudinary';
 import fs from 'fs';
+import path from 'path';
 
 export const uploadImage = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -13,29 +14,45 @@ export const uploadImage = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    console.log('Uploading to Cloudinary:', req.file.path);
     const isPdf = req.file.mimetype === 'application/pdf';
-    const uploadOptions: any = {
-      folder: 'portfolio',
-    };
-    if (!isPdf) {
-      uploadOptions.transformation = [
-        { width: 1200, height: 800, crop: 'limit' },
-        { quality: 'auto' },
-        { fetch_format: 'auto' }
-      ];
+    
+    if (isPdf) {
+      // For PDFs, serve directly from server instead of Cloudinary
+      const fileName = `resume_${Date.now()}.pdf`;
+      const filePath = path.join(__dirname, '../../uploads', fileName);
+      
+      // Move file to uploads directory
+      fs.renameSync(req.file.path, filePath);
+      
+      const serverUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://portfolio-backend-soc1.onrender.com'
+        : 'http://localhost:5000';
+      
+      res.json({
+        url: `${serverUrl}/uploads/${fileName}`,
+        publicId: fileName
+      });
     } else {
-      uploadOptions.resource_type = 'auto';
+      // For images, continue using Cloudinary
+      console.log('Uploading to Cloudinary:', req.file.path);
+      const uploadOptions: any = {
+        folder: 'portfolio',
+        transformation: [
+          { width: 1200, height: 800, crop: 'limit' },
+          { quality: 'auto' },
+          { fetch_format: 'auto' }
+        ]
+      };
+      const result = await cloudinary.uploader.upload(req.file.path, uploadOptions);
+
+      console.log('Upload successful:', result.secure_url);
+      fs.unlinkSync(req.file.path);
+
+      res.json({
+        url: result.secure_url,
+        publicId: result.public_id
+      });
     }
-    const result = await cloudinary.uploader.upload(req.file.path, uploadOptions);
-
-    console.log('Upload successful:', result.secure_url);
-    fs.unlinkSync(req.file.path);
-
-    res.json({
-      url: result.secure_url,
-      publicId: result.public_id
-    });
   } catch (error: any) {
     console.error('Upload error:', error);
     console.error('Error message:', error.message);
