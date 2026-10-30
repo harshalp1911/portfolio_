@@ -44,10 +44,14 @@ npm run build
 npm start
 ```
 
+## Creating the Admin Account
+
+Public registration is disabled. Run `npm run create-admin` (prompts for email, password and username;
+use `-- --force` to reset a password or add another admin).
+
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register admin user
 - `POST /api/auth/login` - Login
 - `GET /api/auth/me` - Get current user (protected)
 

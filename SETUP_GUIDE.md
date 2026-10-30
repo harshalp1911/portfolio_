@@ -112,22 +112,22 @@ Frontend will run on `http://localhost:3000`
 
 ## First Time Setup - Create Admin User
 
-After both servers are running:
-
-1. Use Postman or curl to create admin user:
+Public registration is disabled. Create the admin account from the command line
+(it uses `MONGODB_URI` from `server/.env`):
 
 ```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "admin",
-    "email": "your-email@example.com",
-    "password": "your-secure-password"
-  }'
+cd server
+npm run create-admin
 ```
 
-2. Save the returned JWT token
-3. Use this token to access admin panel
+You'll be prompted for email, password (hidden) and username. Then sign in at
+`http://localhost:3000/#/admin/login`.
+
+To reset your password or add another admin later:
+
+```bash
+npm run create-admin -- --force
+```
 
 ## Development Workflow
 

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import User from '../models/User';
 
 interface JwtPayload {
   userId: string;
@@ -14,7 +15,15 @@ declare global {
   }
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+export const getJwtSecret = (): string => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET is not defined in environment variables');
+  }
+  return secret;
+};
+
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -23,10 +32,16 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
       return;
     }
 
-    const jwtSecret = process.env.JWT_SECRET || '';
-    const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
-    
-    req.user = decoded;
+    const decoded = jwt.verify(token, getJwtSecret()) as JwtPayload;
+
+    // Re-check the account so deleting a user revokes their token immediately
+    const user = await User.findById(decoded.userId).select('role');
+    if (!user) {
+      res.status(401).json({ message: 'Token is not valid' });
+      return;
+    }
+
+    req.user = { userId: String(user._id), role: user.role };
     next();
   } catch (error) {
     res.status(401).json({ message: 'Token is not valid' });
