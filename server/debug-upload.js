@@ -1,6 +1,3 @@
-// Fix SSL certificate issue
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 

@@ -1,6 +1,3 @@
-// Fix SSL certificate issue for Cloudinary
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
