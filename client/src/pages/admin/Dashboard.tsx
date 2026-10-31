@@ -10,6 +10,7 @@ const PostManager = lazy(() => import('../../components/admin/PostManager'));
 const SkillManager = lazy(() => import('../../components/admin/SkillManager'));
 const ResumeManager = lazy(() => import('../../components/admin/ResumeManager'));
 const SettingsManager = lazy(() => import('../../components/admin/SettingsManager'));
+const MessageManager = lazy(() => import('../../components/admin/MessageManager'));
 const ContentManager = lazy(() => import('../admin/Content'));
 const ExperienceManager = lazy(() => import('../admin/Experience'));
 const EducationManager = lazy(() => import('../admin/Education'));
@@ -26,6 +27,7 @@ const Dashboard: React.FC = () => {
 
   const navItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
+    { path: '/admin/messages', label: 'Messages', icon: '✉️' },
     { path: '/admin/content', label: 'Content', icon: '📰' },
     { path: '/admin/experience', label: 'Experience', icon: '💼' },
     { path: '/admin/education', label: 'Education', icon: '🎓' },
@@ -113,6 +115,7 @@ const Dashboard: React.FC = () => {
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
                 <Route path="/dashboard" element={<DashboardHome stats={stats?.data} />} />
+                <Route path="/messages" element={<MessageManager />} />
                 <Route path="/content" element={<ContentManager />} />
                 <Route path="/experience" element={<ExperienceManager />} />
                 <Route path="/education" element={<EducationManager />} />

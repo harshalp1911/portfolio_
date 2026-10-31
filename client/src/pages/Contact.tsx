@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { analyticsAPI, settingsAPI } from '../services/api';
-import api from '../services/api';
+import { contactAPI, settingsAPI } from '../services/api';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -19,10 +18,7 @@ const Contact: React.FC = () => {
     setStatus('loading');
 
     try {
-      await api.post('/contact', formData);
-      await analyticsAPI.trackEvent({
-        type: 'contact_form',
-      });
+      await contactAPI.submit(formData);
 
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });

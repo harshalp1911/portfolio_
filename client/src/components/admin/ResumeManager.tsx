@@ -58,6 +58,7 @@ const ResumeManager: React.FC = () => {
       uploadMutation.mutate({
         fileUrl: response.data.url,
         fileName: file.name,
+        publicId: response.data.publicId,
       });
     } catch (error) {
       setError('Failed to upload file');

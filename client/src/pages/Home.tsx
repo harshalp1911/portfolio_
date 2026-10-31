@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { projectsAPI, skillsAPI, contentAPI, experienceAPI, educationAPI, settingsAPI, resumeAPI } from '../services/api';
+import { projectsAPI, skillsAPI, contentAPI, experienceAPI, educationAPI, settingsAPI, resumeAPI, contactAPI } from '../services/api';
 import ResumeModal from '../components/ResumeModal';
 import RubiksCube from '../components/RubiksCube';
 
@@ -44,6 +44,7 @@ const Home: React.FC = () => {
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [contactStatus, setContactStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [contactError, setContactError] = useState('');
 
   const { data: projects }    = useQuery('featuredProjects', projectsAPI.getAll,              { refetchOnMount: 'always' });
   const { data: skills }      = useQuery('skills',           skillsAPI.getAll,                { refetchOnMount: 'always' });
@@ -65,15 +66,13 @@ const Home: React.FC = () => {
     e.preventDefault();
     if (!contactForm.name || !contactForm.email || !contactForm.message) return;
     setContactStatus('sending');
+    setContactError('');
     try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: contactForm.name, email: contactForm.email, message: contactForm.message }),
-      });
+      await contactAPI.submit(contactForm);
       setContactStatus('sent');
       setContactForm({ name: '', email: '', message: '' });
-    } catch {
+    } catch (err: any) {
+      setContactError(err.response?.data?.message || 'Failed to send. Please try again.');
       setContactStatus('error');
     }
   };
@@ -391,7 +390,7 @@ const Home: React.FC = () => {
                   onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
                   className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 dark:border-gray-700 focus:border-[#EF6461] outline-none transition-colors placeholder:text-gray-400 resize-none text-gray-900 dark:text-gray-100" />
                 {contactStatus === 'sent' && <p className="text-green-500 text-sm">✓ Message sent successfully!</p>}
-                {contactStatus === 'error' && <p className="text-red-400 text-sm">Failed to send. Please try again.</p>}
+                {contactStatus === 'error' && <p className="text-red-400 text-sm">{contactError}</p>}
                 <button type="submit" disabled={contactStatus === 'sending'}
                   className="w-full bg-[#EF6461] hover:bg-[#ff8a87] disabled:opacity-60 text-white font-medium py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#EF6461]/25 hover:-translate-y-0.5">
                   {contactStatus === 'sending' ? 'Sending...' : 'Send Message →'}

@@ -87,6 +87,13 @@ export const settingsAPI = {
   update: (data: any) => api.put('/settings', data),
 };
 
+export const contactAPI = {
+  submit: (data: { name: string; email: string; message: string }) => api.post('/contact', data),
+  getAll: () => api.get('/contact'),
+  setRead: (id: string, read: boolean) => api.patch(`/contact/${id}`, { read }),
+  delete: (id: string) => api.delete(`/contact/${id}`),
+};
+
 export const contentAPI = {
   get: (type: 'hero' | 'about') => api.get(`/content/${type}`),
   update: (type: 'hero' | 'about', data: any) => api.put(`/content/${type}`, data),
