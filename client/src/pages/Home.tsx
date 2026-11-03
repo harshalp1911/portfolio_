@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import { projectsAPI, skillsAPI, contentAPI, experienceAPI, educationAPI, settingsAPI, resumeAPI, contactAPI } from '../services/api';
 import ResumeModal from '../components/ResumeModal';
 import RubiksCube from '../components/RubiksCube';
+import ProjectCarousel from '../components/ProjectCarousel';
 
 const useInView = (threshold = 0.12) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -55,7 +56,7 @@ const Home: React.FC = () => {
   const { data: settingsData }= useQuery('settings',         settingsAPI.get,                 { refetchOnMount: 'always' });
   const { data: resumeData }   = useQuery('resume',           resumeAPI.get,                   { refetchOnMount: 'always', retry: false, onError: () => {} });
 
-  const featuredProjects  = projects?.data?.filter((p: any) => p.featured).slice(0, 3) || [];
+  const featuredProjects  = projects?.data?.filter((p: any) => p.featured) || [];
   const hero              = heroContent?.data?.data?.hero  || {};
   const about             = aboutContent?.data?.data?.about || {};
   const experienceList: any[] = experiences?.data?.data ?? [];
@@ -134,7 +135,7 @@ const Home: React.FC = () => {
       <section className="py-32 bg-white dark:bg-slate-900">
         <div className="container">
           <Fade>
-            <div className="grid md:grid-cols-2 gap-16 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
               <div>
                 <h2 className="section-title text-left mb-8">
                   {about.title?.split('\n').map((line: string, i: number) => (
@@ -218,17 +219,16 @@ const Home: React.FC = () => {
               View All <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
             </Link>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
-            {featuredProjects.length > 0 ? featuredProjects.map((project: any, idx: number) => (
-              <Fade key={project._id} delay={idx * 100}>
-                <div className="group rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl bg-white dark:bg-slate-800 hover:-translate-y-1.5 transition-all duration-300">
+          {featuredProjects.length > 0 ? (
+            <ProjectCarousel>
+              {featuredProjects.map((project: any, idx: number) => (
+              <Fade key={project._id} delay={idx * 100} className="flex-shrink-0 snap-start w-[85%] md:w-[calc(50%-14px)] lg:w-[calc(33.333%-18.667px)]">
+                <div className="group h-full rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl bg-white dark:bg-slate-800 hover:-translate-y-1.5 transition-all duration-300">
                   <div className="relative overflow-hidden aspect-[4/3]">
                     <img src={project.imageUrl} alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-40 dark:opacity-30">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100 transition-all duration-300">
                       <div className="flex gap-2">
                         {project.demoUrl && (
                           <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
@@ -254,10 +254,11 @@ const Home: React.FC = () => {
                   </div>
                 </div>
               </Fade>
-            )) : (
-              <p className="col-span-3 text-center text-gray-400 py-16">No featured projects yet.</p>
-            )}
-          </div>
+            ))}
+            </ProjectCarousel>
+          ) : (
+            <p className="text-center text-gray-400 py-16">No featured projects yet.</p>
+          )}
         </div>
       </section>
 

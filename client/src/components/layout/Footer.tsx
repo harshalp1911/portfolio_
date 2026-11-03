@@ -42,7 +42,7 @@ const Footer: React.FC = () => {
               <span className="text-white font-bold text-xl">H</span>
             </div>
           </div>
-          <h3 className="text-4xl font-normal text-white mb-4">
+          <h3 className="text-2xl sm:text-4xl font-normal text-white mb-4 break-words">
             harshalp0602@gmail.com
           </h3>
           <p className="text-gray-400 text-lg mb-2">

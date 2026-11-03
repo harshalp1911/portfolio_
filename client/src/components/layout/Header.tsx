@@ -100,7 +100,7 @@ const Header: React.FC = () => {
                 <button
                   key={link.name}
                   onClick={() => handleSectionClick(link.section)}
-                  className="px-4 py-1.5 text-sm font-medium transition-all duration-200 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-white/10 rounded-full"
+                  className="px-2.5 lg:px-4 py-1.5 text-sm font-medium transition-all duration-200 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-white/10 rounded-full"
                 >
                   {link.name}
                 </button>
@@ -108,7 +108,7 @@ const Header: React.FC = () => {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`px-4 py-1.5 text-sm font-medium transition-all duration-200 rounded-full ${
+                  className={`px-2.5 lg:px-4 py-1.5 text-sm font-medium transition-all duration-200 rounded-full ${
                     location.pathname === link.path
                       ? 'text-gray-900 dark:text-white bg-gray-100/60 dark:bg-white/15'
                       : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/60 dark:hover:bg-white/10'
@@ -173,7 +173,7 @@ const Header: React.FC = () => {
                 <button
                   key={link.name}
                   onClick={() => handleSectionClick(link.section)}
-                  className="block py-2.5 text-sm font-medium transition-colors text-white/75 hover:text-white w-full text-left"
+                  className="block py-2.5 text-sm font-medium transition-colors text-gray-700 hover:text-gray-900 dark:text-white/75 dark:hover:text-white w-full text-left"
                 >
                   {link.name}
                 </button>
@@ -185,7 +185,7 @@ const Header: React.FC = () => {
                   className={`block py-2.5 text-sm font-medium transition-colors ${
                     location.pathname === link.path
                       ? 'text-[#EF6461]'
-                      : 'text-white/75 hover:text-white'
+                      : 'text-gray-700 hover:text-gray-900 dark:text-white/75 dark:hover:text-white'
                   }`}
                 >
                   {link.name}
@@ -194,7 +194,7 @@ const Header: React.FC = () => {
             ))}
             <button
               onClick={toggleTheme}
-              className="mt-3 flex items-center space-x-2 text-white/75 hover:text-white"
+              className="mt-3 flex items-center space-x-2 text-gray-700 hover:text-gray-900 dark:text-white/75 dark:hover:text-white"
             >
               <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
             </button>
