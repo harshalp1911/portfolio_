@@ -90,20 +90,16 @@ const Dashboard: React.FC = () => {
                 <h3 className="font-semibold mb-4">Quick Stats</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Total Views</span>
-                    <span className="font-semibold">{stats.data.totalViews}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Projects</span>
+                    <span className="font-semibold">{stats.data.projectCount}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Project Views</span>
-                    <span className="font-semibold">{stats.data.projectViews}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Posts</span>
+                    <span className="font-semibold">{stats.data.postCount}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Post Views</span>
-                    <span className="font-semibold">{stats.data.postViews}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Contact Forms</span>
-                    <span className="font-semibold">{stats.data.contactForms}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Messages</span>
+                    <span className="font-semibold">{stats.data.messageCount}</span>
                   </div>
                 </div>
               </div>

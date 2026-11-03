@@ -48,11 +48,8 @@ export interface User {
 }
 
 export interface DashboardStats {
-  totalViews: number;
-  projectViews: number;
-  postViews: number;
-  contactForms: number;
-  topProjects: Project[];
-  recentActivity: any[];
-  viewsByDay: { _id: string; count: number }[];
+  projectCount: number;
+  postCount: number;
+  messageCount: number;
+  recentProjects: Pick<Project, '_id' | 'title' | 'imageUrl'>[];
 }
