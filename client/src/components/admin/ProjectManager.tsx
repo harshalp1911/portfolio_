@@ -281,7 +281,7 @@ const ProjectManager: React.FC = () => {
             <div className="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-700">
               <span className="text-sm text-gray-600 dark:text-gray-400">{project.views} views</span>
               <div className="flex gap-2">
-                <button onClick={() => handleEdit(project)} className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                <button onClick={() => handleEdit(project)} className="text-primary-600 hover:text-primary-700 text-sm font-medium">
                   Edit
                 </button>
                 <button onClick={() => handleDelete(project._id)} className="text-red-600 hover:text-red-700 text-sm font-medium">

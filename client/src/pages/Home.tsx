@@ -33,13 +33,7 @@ const Fade: React.FC<{ children: React.ReactNode; delay?: number; className?: st
   );
 };
 
-const categoryMeta: Record<string, { icon: string }> = {
-  database:   { icon: '🗄️' },
-  languages:  { icon: '💻' },
-  frameworks: { icon: '⚛️' },
-  tools:      { icon: '🔧' },
-  courses:    { icon: '📚' },
-};
+const SKILL_CATEGORY_ORDER = ['languages', 'frameworks', 'databases', 'tools', 'coursework'];
 
 const Home: React.FC = () => {
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
@@ -56,6 +50,13 @@ const Home: React.FC = () => {
   const { data: settingsData }= useQuery('settings',         settingsAPI.get,                 { refetchOnMount: 'always' });
   const { data: resumeData }   = useQuery('resume',           resumeAPI.get,                   { refetchOnMount: 'always', retry: false, onError: () => {} });
 
+  // Known categories in a set order; any new category goes at the end
+  const orderOf = (category: string) => {
+    const index = SKILL_CATEGORY_ORDER.indexOf(category);
+    return index === -1 ? SKILL_CATEGORY_ORDER.length : index;
+  };
+  const sortedSkillCategories = (Object.entries(skills?.data || {}) as [string, any[]][])
+    .sort(([a], [b]) => orderOf(a) - orderOf(b));
   const featuredProjects  = projects?.data?.filter((p: any) => p.featured) || [];
   const hero              = heroContent?.data?.data?.hero  || {};
   const about             = aboutContent?.data?.data?.about || {};
@@ -102,9 +103,15 @@ const Home: React.FC = () => {
                 {hero.description || 'Passionate about building scalable web applications and optimizing user experiences. Skilled in MERN stack, backend development, and real-time collaboration tools.'}
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to={hero.primaryButtonLink || '/projects'} target='blank' className="btn-primary">
-                  {hero.primaryButtonText || 'View Work'}
-                </Link>
+                {hero.primaryButtonLink?.startsWith('http') ? (
+                  <a href={hero.primaryButtonLink} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                    {hero.primaryButtonText || 'View Work'}
+                  </a>
+                ) : (
+                  <Link to={hero.primaryButtonLink || '/projects'} className="btn-primary">
+                    {hero.primaryButtonText || 'View Work'}
+                  </Link>
+                )}
                 <button 
                   onClick={() => {
                     const resume = resumeData?.data;
@@ -178,19 +185,15 @@ const Home: React.FC = () => {
               <div className="w-10 h-0.5 bg-[#EF6461] mx-auto mt-4" />
             </div>
           </Fade>
-          <div className="max-w-5xl mx-auto grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {skills?.data && Object.entries(skills.data).map(([category, categorySkills]: [string, any], idx) => (
-              <Fade key={category} delay={idx * 80}>
-                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 dark:border-gray-700 h-full shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-2xl">{categoryMeta[category]?.icon || '🔹'}</span>
-                    <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                      {category === 'database' ? 'Database' : category === 'languages' ? 'Languages' : category === 'frameworks' ? 'Frameworks' : category === 'tools' ? 'Tools' : category === 'courses' ? 'Courses' : category.charAt(0).toUpperCase() + category.slice(1)}
-                      <span className="text-[#EF6461]">.</span>
-                    </h3>
-                  </div>
+          <Fade>
+            <div className="max-w-4xl mx-auto bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl px-6 sm:px-8 border border-gray-100 dark:border-gray-700 shadow-sm divide-y divide-gray-100 dark:divide-gray-700">
+              {sortedSkillCategories.map(([category, categorySkills]) => (
+                <div key={category} className="grid grid-cols-1 sm:grid-cols-[140px_minmax(0,1fr)] gap-3 sm:gap-6 py-6">
+                  <h3 className="text-base font-semibold text-[#EF6461] sm:pt-1">
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </h3>
                   <div className="flex flex-wrap gap-2">
-                    {(categorySkills as any[]).map((skill: any) => (
+                    {categorySkills.map((skill: any) => (
                       <span key={skill._id}
                         className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-[#EF6461] hover:border-[#EF6461] hover:text-white transition-all duration-200 cursor-default font-medium">
                         {skill.name}
@@ -198,9 +201,9 @@ const Home: React.FC = () => {
                     ))}
                   </div>
                 </div>
-              </Fade>
-            ))}
-          </div>
+              ))}
+            </div>
+          </Fade>
         </div>
       </section>
 
@@ -214,11 +217,6 @@ const Home: React.FC = () => {
               <div className="w-10 h-0.5 bg-[#EF6461] mx-auto mt-4" />
             </div>
           </Fade>
-          <div className="text-center mb-8">
-            <Link to="/projects" className="text-sm text-gray-400 hover:text-[#EF6461] transition-colors inline-flex items-center gap-1 group">
-              View All <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
-            </Link>
-          </div>
           {featuredProjects.length > 0 ? (
             <ProjectCarousel>
               {featuredProjects.map((project: any, idx: number) => (
@@ -259,6 +257,11 @@ const Home: React.FC = () => {
           ) : (
             <p className="text-center text-gray-400 py-16">No featured projects yet.</p>
           )}
+          <div className="text-center mt-10">
+            <Link to="/projects" className="text-sm text-gray-400 hover:text-[#EF6461] transition-colors inline-flex items-center gap-1 group">
+              View All <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+            </Link>
+          </div>
         </div>
       </section>
 

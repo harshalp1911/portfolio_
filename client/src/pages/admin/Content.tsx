@@ -166,8 +166,8 @@ const Content: React.FC = () => {
             </div>
           </div>
 
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-300">
+          <div className="p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg">
+            <p className="text-sm text-primary-800 dark:text-primary-300">
               <strong>Note:</strong> The Resume button is automatically linked to the resume uploaded in the Resume section of the admin panel.
             </p>
           </div>

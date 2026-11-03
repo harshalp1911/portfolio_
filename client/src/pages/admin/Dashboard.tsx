@@ -31,7 +31,7 @@ const Dashboard: React.FC = () => {
     { path: '/admin/content', label: 'Content', icon: '📰' },
     { path: '/admin/experience', label: 'Experience', icon: '💼' },
     { path: '/admin/education', label: 'Education', icon: '🎓' },
-    { path: '/admin/projects', label: 'Projects', icon: '�' },
+    { path: '/admin/projects', label: 'Projects', icon: '🚀' },
     { path: '/admin/posts', label: 'Posts', icon: '📝' },
     { path: '/admin/skills', label: 'Skills', icon: '🎯' },
     { path: '/admin/resume', label: 'Resume', icon: '📄' },
