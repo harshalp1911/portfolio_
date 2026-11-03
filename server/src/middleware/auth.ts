@@ -48,7 +48,30 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-export const adminMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+// Sets req.user when a valid token is sent, but never rejects the request,
+// so public routes keep working for visitors and for expired tokens.
+export const optionalAuth = async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) {
+    next();
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(token, getJwtSecret()) as JwtPayload;
+    const user = await User.findById(decoded.userId).select('role');
+    if (user) {
+      req.user = { userId: String(user._id), role: user.role };
+    }
+  } catch (error) {
+    // Invalid or expired token: treat as a visitor
+  }
+  next();
+};
+
+export const isAdmin = (req: Request): boolean => req.user?.role === 'admin';
+
+export const adminMiddleware =(req: Request, res: Response, next: NextFunction): void => {
   if (req.user?.role !== 'admin') {
     res.status(403).json({ message: 'Access denied. Admin only.' });
     return;
