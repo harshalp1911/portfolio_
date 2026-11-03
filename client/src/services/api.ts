@@ -22,7 +22,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/admin/login';
+      // Only admin pages need a login; visitors stay on the public page they're on
+      if (window.location.hash.startsWith('#/admin')) {
+        window.location.hash = '#/admin/login';
+      }
     }
     return Promise.reject(error);
   }

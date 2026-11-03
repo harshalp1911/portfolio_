@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Layout from './components/layout/Layout';
 import LoadingSpinner from './components/common/LoadingSpinner';
@@ -20,6 +20,10 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// UX only: sends logged-out users to the login page. The server enforces real access.
+const RequireLogin: React.FC<{ children: React.ReactElement }> = ({ children }) =>
+  localStorage.getItem('token') ? children : <Navigate to="/admin/login" replace />;
 
 function App() {
   useEffect(() => {
@@ -45,7 +49,7 @@ function App() {
               <Route path="contact" element={<Contact />} />
             </Route>
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/*" element={<AdminDashboard />} />
+            <Route path="/admin/*" element={<RequireLogin><AdminDashboard /></RequireLogin>} />
           </Routes>
         </Suspense>
       </Router>
