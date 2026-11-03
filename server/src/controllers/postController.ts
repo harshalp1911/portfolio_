@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Post from '../models/Post';
 import Analytics from '../models/Analytics';
+import { isAdmin } from '../middleware/auth';
 
 export const getAllPosts = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -8,7 +9,9 @@ export const getAllPosts = async (req: Request, res: Response): Promise<void> =>
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    const query = req.user ? {} : { published: true };
+    // Drafts are listed only for the admin panel (?all=true with an admin token)
+    const showAll = req.query.all === 'true' && isAdmin(req);
+    const query = showAll ? {} : { published: true };
 
     const posts = await Post.find(query)
       .sort({ createdAt: -1 })
@@ -37,7 +40,7 @@ export const getPostById = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    if (!post.published && !req.user) {
+    if (!post.published && !isAdmin(req)) {
       res.status(403).json({ message: 'Post not published' });
       return;
     }

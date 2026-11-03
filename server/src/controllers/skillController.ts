@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
 import Skill from '../models/Skill';
+import { isAdmin } from '../middleware/auth';
 
 export const getAllSkills = async (req: Request, res: Response): Promise<void> => {
   try {
-    const query = req.user ? {} : { visible: true };
+    // Hidden skills are listed only for the admin panel (?all=true with an admin token)
+    const showAll = req.query.all === 'true' && isAdmin(req);
+    const query = showAll ? {} : { visible: true };
     const skills = await Skill.find(query).sort({ category: 1, order: 1 });
     
     const groupedSkills = skills.reduce((acc: any, skill) => {

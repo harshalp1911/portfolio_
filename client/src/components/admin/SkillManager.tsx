@@ -4,7 +4,7 @@ import { skillsAPI } from '../../services/api';
 
 const SkillManager: React.FC = () => {
   const queryClient = useQueryClient();
-  const { data: skillsData } = useQuery('adminSkills', skillsAPI.getAll);
+  const { data: skillsData } = useQuery('adminSkills', () => skillsAPI.getAllAdmin());
   const [isEditing, setIsEditing] = useState(false);
   const [currentSkill, setCurrentSkill] = useState<any>(null);
 

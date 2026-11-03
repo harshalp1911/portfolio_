@@ -4,7 +4,7 @@ import { postsAPI, uploadAPI } from '../../services/api';
 
 const PostManager: React.FC = () => {
   const queryClient = useQueryClient();
-  const { data: postsData } = useQuery('adminPosts', () => postsAPI.getAll(1, 50));
+  const { data: postsData } = useQuery('adminPosts', () => postsAPI.getAllAdmin(1, 50));
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<any>(null);
   const [uploading, setUploading] = useState(false);

@@ -8,12 +8,12 @@ import {
   likePost,
   addComment
 } from '../controllers/postController';
-import { authMiddleware, adminMiddleware } from '../middleware/auth';
+import { authMiddleware, adminMiddleware, optionalAuth } from '../middleware/auth';
 
 const router = express.Router();
 
-router.get('/', getAllPosts);
-router.get('/:id', getPostById);
+router.get('/', optionalAuth, getAllPosts);
+router.get('/:id', optionalAuth, getPostById);
 router.post('/', authMiddleware, adminMiddleware, createPost);
 router.put('/:id', authMiddleware, adminMiddleware, updatePost);
 router.delete('/:id', authMiddleware, adminMiddleware, deletePost);

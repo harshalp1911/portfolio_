@@ -43,6 +43,8 @@ export const projectsAPI = {
 
 export const postsAPI = {
   getAll: (page = 1, limit = 10) => api.get(`/posts?page=${page}&limit=${limit}`),
+  // Admin panel only: includes drafts
+  getAllAdmin: (page = 1, limit = 10) => api.get(`/posts?page=${page}&limit=${limit}&all=true`),
   getById: (id: string) => api.get(`/posts/${id}`),
   create: (data: any) => api.post('/posts', data),
   update: (id: string, data: any) => api.put(`/posts/${id}`, data),
@@ -53,6 +55,8 @@ export const postsAPI = {
 
 export const skillsAPI = {
   getAll: () => api.get('/skills'),
+  // Admin panel only: includes hidden skills
+  getAllAdmin: () => api.get('/skills?all=true'),
   create: (data: any) => api.post('/skills', data),
   update: (id: string, data: any) => api.put(`/skills/${id}`, data),
   delete: (id: string) => api.delete(`/skills/${id}`),
