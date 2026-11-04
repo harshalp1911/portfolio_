@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface IResume extends Document {
   fileUrl: string;
   fileName: string;
+  publicId?: string;
   uploadedAt: Date;
 }
 
@@ -14,6 +15,9 @@ const ResumeSchema: Schema = new Schema({
   fileName: {
     type: String,
     required: true,
+  },
+  publicId: {
+    type: String,
   },
   uploadedAt: {
     type: Date,

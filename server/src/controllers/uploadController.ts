@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import cloudinary from '../config/cloudinary';
 import fs from 'fs';
-import path from 'path';
 
 export const uploadImage = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -17,20 +16,20 @@ export const uploadImage = async (req: Request, res: Response): Promise<void> =>
     const isPdf = req.file.mimetype === 'application/pdf';
     
     if (isPdf) {
-      // For PDFs, serve directly from server instead of Cloudinary
-      const fileName = `resume_${Date.now()}.pdf`;
-      const filePath = path.join(__dirname, '../../uploads', fileName);
-      
-      // Move file to uploads directory
-      fs.renameSync(req.file.path, filePath);
-      
-      const serverUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://portfolio-backend-soc1.onrender.com'
-        : 'http://localhost:5000';
-      
+      console.log('Uploading PDF resume to Cloudinary:', req.file.path);
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'portfolio/resumes',
+        resource_type: 'raw',
+        use_filename: true,
+        unique_filename: true,
+      });
+
+      fs.unlinkSync(req.file.path);
+
       res.json({
-        url: `${serverUrl}/uploads/${fileName}`,
-        publicId: fileName
+        url: result.secure_url,
+        publicId: result.public_id,
+        resourceType: result.resource_type
       });
     } else {
       // For images, continue using Cloudinary
