@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Project from '../models/Project';
+import { deleteImageIfUnused } from '../utils/cloudinaryCleanup';
 import Analytics from '../models/Analytics';
 
 export const getAllProjects = async (req: Request, res: Response): Promise<void> => {
@@ -59,6 +60,7 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
 
 export const updateProject = async (req: Request, res: Response): Promise<void> => {
   try {
+    const previous = await Project.findById(req.params.id).select('imageUrl');
     const project = await Project.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -68,6 +70,10 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
     if (!project) {
       res.status(404).json({ message: 'Project not found' });
       return;
+    }
+
+    if (previous?.imageUrl !== project.imageUrl) {
+      await deleteImageIfUnused(previous?.imageUrl);
     }
     
     res.json(project);
@@ -83,6 +89,7 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
       res.status(404).json({ message: 'Project not found' });
       return;
     }
+    await deleteImageIfUnused(project.imageUrl);
     res.json({ message: 'Project deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

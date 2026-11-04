@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Post from '../models/Post';
+import { deleteImageIfUnused } from '../utils/cloudinaryCleanup';
 import Analytics from '../models/Analytics';
 import { isAdmin } from '../middleware/auth';
 
@@ -71,6 +72,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
 
 export const updatePost = async (req: Request, res: Response): Promise<void> => {
   try {
+    const previous = await Post.findById(req.params.id).select('imageUrl');
     const post = await Post.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -80,6 +82,10 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
     if (!post) {
       res.status(404).json({ message: 'Post not found' });
       return;
+    }
+
+    if (previous?.imageUrl !== post.imageUrl) {
+      await deleteImageIfUnused(previous?.imageUrl);
     }
     
     res.json(post);
@@ -95,6 +101,7 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
       res.status(404).json({ message: 'Post not found' });
       return;
     }
+    await deleteImageIfUnused(post.imageUrl);
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

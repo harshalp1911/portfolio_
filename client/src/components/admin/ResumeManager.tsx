@@ -27,8 +27,9 @@ const ResumeManager: React.FC = () => {
 
   const deleteMutation = useMutation(resumeAPI.delete, {
     onSuccess: () => {
+      // A failed refetch (404: no resume left) keeps the old data, so clear it here
+      queryClient.setQueryData('resume', undefined);
       queryClient.invalidateQueries('resume');
-      queryClient.refetchQueries('resume');
       setSuccess('Resume deleted successfully!');
       setTimeout(() => setSuccess(''), 3000);
     },
