@@ -248,13 +248,13 @@ const Experience: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
+                <label className="block text-sm font-medium mb-2">Description <span className="text-gray-400 font-normal">(one bullet point per line)</span></label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={4}
+                  rows={6}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#EF6461] focus:border-transparent dark:bg-gray-700"
-                  placeholder="Brief description of your role and achievements"
+                  placeholder={'Built a JWT-based authentication system\nDesigned role-based access control\n...'}
                 />
               </div>
 

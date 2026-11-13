@@ -295,9 +295,17 @@ const Home: React.FC = () => {
                       </div>
                       <span className="text-xs font-semibold px-3 py-1 bg-[#EF6461]/10 text-[#EF6461] rounded-full whitespace-nowrap">{exp.period}</span>
                     </div>
-                    {exp.description && (
-                      <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">{exp.description}</p>
-                    )}
+                    {exp.description && (() => {
+                      // Each line typed in the admin form is one bullet; a single line stays a paragraph
+                      const points = exp.description.split('\n').map((line: string) => line.replace(/^\s*[-•*]\s*/, '').trim()).filter(Boolean);
+                      return points.length > 1 ? (
+                        <ul className="list-disc pl-5 space-y-1.5 marker:text-[#EF6461] text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">
+                          {points.map((point: string, i: number) => <li key={i}>{point}</li>)}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">{points[0]}</p>
+                      );
+                    })()}
                     {exp.techStack?.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {exp.techStack.map((tech: string, i: number) => (
